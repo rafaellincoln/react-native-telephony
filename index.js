@@ -7,30 +7,18 @@ const RNTelephony = NativeModules.Telephony
 
 const EVENT_PHONE_STATE = 'phoneState'
 
-const LISTENER_CALL_STATE = 'Telephony-phoneCallStateUpdated'
+const PHONE_STATE_LISTENER = 'Telephony-PhoneStateListener'
 
-export default class Telephony {
-    static addEventListener(event, handler) {
-      switch (event) {
-        case EVENT_PHONE_STATE:
-            RNTelephony && RNTelephony.startListener()
-            // TelephonyActionModule.callback = callback 
-            NativeAppEventEmitter.addListener(
-                LISTENER_CALL_STATE,
-                (result) => {
-                    handler(result);
-                }
-            );
-          break;
-      
-        default:
-          break;
+const telephony = RNTelephony
+
+telephony.addEventListener = (events, handler) => {
+  RNTelephony && RNTelephony.startListener(events)
+    NativeAppEventEmitter.addListener(
+      PHONE_STATE_LISTENER,
+      (result) => {
+          handler(result);
       }
-    }
-
-    static teste() {
-      RNTelephony.teste((result) => {
-        console.log('Teste', result)
-      })
-    }
+  );
 }
+
+export default telephony

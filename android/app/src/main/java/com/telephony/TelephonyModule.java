@@ -16,6 +16,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Rafael on 03/07/17.
  */
@@ -26,6 +29,17 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     private ReactApplicationContext mReactContext;
     private TelephonyManager telephonyManager;
     private TelephonyListener telephonyPhoneStateListener;
+    private String PHONE_STATE_LISTENER = "Telephony-PhoneStateListener";
+
+    private String LISTEN_CALL_FORWARDING_INDICATOR = "LISTEN_CALL_FORWARDING_INDICATOR";
+    private String LISTEN_CALL_STATE = "LISTEN_CALL_STATE";
+    private String LISTEN_CELL_INFO = "LISTEN_CELL_INFO";
+    private String LISTEN_CELL_LOCATION = "LISTEN_CELL_LOCATION";
+    private String LISTEN_DATA_ACTIVITY = "LISTEN_DATA_ACTIVITY";
+    private String LISTEN_DATA_CONNECTION_STATE = "LISTEN_DATA_CONNECTION_STATE";
+    private String LISTEN_MESSAGE_WAITING_INDICATOR = "LISTEN_MESSAGE_WAITING_INDICATOR";
+    private String LISTEN_SERVICE_STATE = "LISTEN_SERVICE_STATE";
+    private String LISTEN_SIGNAL_STRENGTHS = "LISTEN_SIGNAL_STRENGTHS";
 
     public TelephonyModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -41,12 +55,11 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void startListener() {
+    public void startListener(int events) {
         telephonyManager = (TelephonyManager) mReactContext.getSystemService(
                 Context.TELEPHONY_SERVICE);
         telephonyPhoneStateListener = new TelephonyListener(this);
-        telephonyManager.listen(telephonyPhoneStateListener,
-                PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager.listen(telephonyPhoneStateListener, events);
 
     }
 
@@ -58,14 +71,24 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         telephonyPhoneStateListener = null;
     }
 
-    @ReactMethod
-    public void teste(Callback successCallback) {
-        successCallback.invoke(1 | 2);
-    }
-
     @Override
     public String getName() {
         return "Telephony";
+    }
+
+    @Override
+    public Map<String, Object> getConstants() {
+        final Map<String, Object> constants = new HashMap<>();
+        constants.put(LISTEN_CALL_FORWARDING_INDICATOR, PhoneStateListener.LISTEN_CALL_FORWARDING_INDICATOR);
+        constants.put(LISTEN_CALL_STATE, PhoneStateListener.LISTEN_CALL_STATE);
+        constants.put(LISTEN_CELL_INFO, PhoneStateListener.LISTEN_CELL_INFO);
+        constants.put(LISTEN_CELL_LOCATION, PhoneStateListener.LISTEN_CELL_LOCATION);
+        constants.put(LISTEN_DATA_ACTIVITY, PhoneStateListener.LISTEN_DATA_ACTIVITY);
+        constants.put(LISTEN_DATA_CONNECTION_STATE, PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+        constants.put(LISTEN_MESSAGE_WAITING_INDICATOR, PhoneStateListener.LISTEN_MESSAGE_WAITING_INDICATOR);
+        constants.put(LISTEN_SERVICE_STATE, PhoneStateListener.LISTEN_SERVICE_STATE);
+        constants.put(LISTEN_SIGNAL_STRENGTHS, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        return constants;
     }
 
     @Override
@@ -73,7 +96,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         WritableMap map = Arguments.createMap();
         map.putInt("state", state);
         map.putString("incomingNumber", incomingNumber);
-        sendEvent("Telephony-phoneCallStateUpdated", map);
+        sendEvent(PHONE_STATE_LISTENER, map);
     }
 
     @Override
