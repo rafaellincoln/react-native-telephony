@@ -18,13 +18,6 @@ import java.util.List;
 
 public class TelephonyPackage implements ReactPackage {
 
-    private Application applicationInstance;
-
-    public TelephonyPackage(Application applicationInstance) {
-        super();
-        this.applicationInstance = applicationInstance;
-    }
-
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
@@ -40,11 +33,7 @@ public class TelephonyPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        TelephonyModule telephonyCallStateModule = new TelephonyModule(reactContext);
-
-        applicationInstance.registerActivityLifecycleCallbacks(telephonyCallStateModule);
-
-        modules.add(telephonyCallStateModule);
+        modules.add(new TelephonyModule(reactContext));
 
         return modules;
     }
