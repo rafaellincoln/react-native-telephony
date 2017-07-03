@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "jest"
 	},
-	"peerDependencies": {
+	"dependencies": {
 		"react": "16.0.0-alpha.12",
 		"react-native": "^0.44.0"
 	},
