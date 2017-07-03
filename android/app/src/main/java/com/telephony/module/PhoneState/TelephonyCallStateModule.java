@@ -8,8 +8,10 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.telephony.module.TelephonyActionModule;
 
 /**
@@ -92,10 +94,18 @@ public class TelephonyCallStateModule extends ReactContextBaseJavaModule
 
     @Override
     public void phoneCallStateUpdated(int state, String incomingNumber) {
-        if (jsModule == null) {
-            jsModule = this.reactContext.getJSModule(TelephonyActionModule.class);
-        }
+//        if (jsModule == null) {
+//            jsModule = this.reactContext.getJSModule(TelephonyActionModule.class);
+//        }
+//
+//        jsModule.callStateUpdated(incomingNumber);
 
-        jsModule.callStateUpdated(incomingNumber);
+        sendEvent("Telephony-phoneCallStateUpdated", incomingNumber);
+    }
+
+    private void sendEvent(String eventName, Object params) {
+        this.reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
     }
 }
