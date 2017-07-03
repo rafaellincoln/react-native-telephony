@@ -7,11 +7,8 @@ import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
-import com.telephony.module.PhoneState.TelephonyCallStateModule;
-import com.telephony.module.TelephonyActionModule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,9 +27,7 @@ public class TelephonyPackage implements ReactPackage {
 
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
-        return Arrays.<Class<? extends JavaScriptModule>>asList(
-                TelephonyActionModule.class
-        );
+        return Collections.emptyList();
     }
 
     @Override
@@ -45,7 +40,7 @@ public class TelephonyPackage implements ReactPackage {
             ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
 
-        TelephonyCallStateModule telephonyCallStateModule = new TelephonyCallStateModule(reactContext);
+        TelephonyModule telephonyCallStateModule = new TelephonyModule(reactContext);
 
         applicationInstance.registerActivityLifecycleCallbacks(telephonyCallStateModule);
 

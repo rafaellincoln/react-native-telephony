@@ -2,23 +2,18 @@
 * @providesModule react-native-telephony
 */
 import { NativeModules, NativeAppEventEmitter } from 'react-native'
-const BatchedBridge = require('react-native/Libraries/BatchedBridge/BatchedBridge')
 
-// const NativeCallDetector = NativeModules.CallDetectionManager
-const PhoneState = NativeModules.PhoneState
+const RNTelephony = NativeModules.Telephony
 
-const TelephonyActionModule = require('./TelephonyActionModule')
-BatchedBridge.registerCallableModule('TelephonyActionModule', TelephonyActionModule)
-
-const PHONE_STATE = 'phoneState'
+const EVENT_PHONE_STATE = 'phoneState'
 
 const LISTENER_CALL_STATE = 'Telephony-phoneCallStateUpdated'
 
 export default class Telephony {
     static addEventListener(event, handler) {
       switch (event) {
-        case PHONE_STATE:
-            PhoneState && PhoneState.startListener()
+        case EVENT_PHONE_STATE:
+            RNTelephony && RNTelephony.startListener()
             // TelephonyActionModule.callback = callback 
             NativeAppEventEmitter.addListener(
                 LISTENER_CALL_STATE,
@@ -31,5 +26,11 @@ export default class Telephony {
         default:
           break;
       }
+    }
+
+    static teste() {
+      RNTelephony.teste((result) => {
+        console.log('Teste', result)
+      })
     }
 }
