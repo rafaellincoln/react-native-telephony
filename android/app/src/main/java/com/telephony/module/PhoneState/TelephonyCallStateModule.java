@@ -29,7 +29,7 @@ public class TelephonyCallStateModule extends ReactContextBaseJavaModule
         super(reactContext);
         this.reactContext = reactContext;
 
-        jsModule = this.reactContext.getJSModule(TelephonyActionModule.class);
+        // jsModule = this.reactContext.getJSModule(TelephonyActionModule.class);
     }
 
     @ReactMethod
