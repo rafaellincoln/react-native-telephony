@@ -102,13 +102,19 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         telephonyPhoneStateListener = null;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @ReactMethod
     public void getSignalStrength(Callback successCallback) {
-        CellInfoGsm cellinfogsm = (CellInfoGsm)telephonyManager.getAllCellInfo().get(0);
-        CellSignalStrengthGsm cellSignalStrengthGsm;
-        cellSignalStrengthGsm = cellinfogsm.getCellSignalStrength();
+        int dBm = 0;
 
-        successCallback.invoke(cellSignalStrengthGsm.getDbm());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            CellInfoGsm cellinfogsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(0);
+            CellSignalStrengthGsm cellSignalStrengthGsm;
+            cellSignalStrengthGsm = cellinfogsm.getCellSignalStrength();
+            dBm = cellSignalStrengthGsm.getDbm();
+        }
+
+        successCallback.invoke(dBm);
     }
 
     @ReactMethod
