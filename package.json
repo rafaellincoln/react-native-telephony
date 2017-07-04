@@ -6,6 +6,12 @@
 	"scripts": {
 		"test": "jest"
 	},
+	"author": "Rafael Lincoln <rafaellincolnpereira@gmail.com>",
+	"repository": {
+    "type": "git",
+    "url": "https://github.com/rafaellincoln/react-native-telephony"
+  },
+	"license": "MIT",
 	"devDependencies": {
 		"babel-jest": "20.0.3",
 		"babel-preset-react-native": "2.0.0",

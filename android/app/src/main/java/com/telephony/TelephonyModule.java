@@ -181,12 +181,14 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         dataActivity.put("DATA_CONNECTED", DATA_CONNECTED);
         dataActivity.put("DATA_SUSPENDED", DATA_SUSPENDED);
 
+        constants.put("DATA_CONNECTION", dataActivity);
+
         final Map<String, Object> signal = new HashMap<>();
         signal.put("CALL_STATE_IDLE", CALL_STATE_IDLE);
         signal.put("CALL_STATE_RINGING", CALL_STATE_RINGING);
         signal.put("CALL_STATE_OFFHOOK", CALL_STATE_OFFHOOK);
 
-        constants.put("DATA_CONNECTION", dataActivity);
+        constants.put("CALL_STATE", signal);
 
         return constants;
     }
@@ -338,6 +340,6 @@ public class TelephonyModule extends ReactContextBaseJavaModule
 
     @Override
     public void onHostDestroy() {
-        // Activity `onDestroy`
+        stopListener();
     }
 }
