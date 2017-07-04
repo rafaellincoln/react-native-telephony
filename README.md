@@ -6,7 +6,7 @@
 Add the package to your react-native project in the following way
 
 ```shell
-yarn add react-native-call-telephony
+yarn add react-native-telephony
 
 ```
 
