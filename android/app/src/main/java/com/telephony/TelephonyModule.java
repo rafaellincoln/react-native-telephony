@@ -71,6 +71,10 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     private int DATA_CONNECTED = 2;
     private int DATA_SUSPENDED = 3;
 
+    private int CALL_STATE_IDLE = 0;
+    private int CALL_STATE_RINGING = 1;
+    private int CALL_STATE_OFFHOOK = 2;
+
     public TelephonyModule(ReactApplicationContext reactContext) {
         super(reactContext);
         mReactContext = reactContext;
@@ -172,10 +176,15 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         constants.put("DATA_ACTIVITY", directions);
 
         final Map<String, Object> dataActivity = new HashMap<>();
-        directions.put("DATA_DISCONNECTED", DATA_DISCONNECTED);
-        directions.put("DATA_CONNECTING", DATA_CONNECTING);
-        directions.put("DATA_CONNECTED", DATA_CONNECTED);
-        directions.put("DATA_SUSPENDED", DATA_SUSPENDED);
+        dataActivity.put("DATA_DISCONNECTED", DATA_DISCONNECTED);
+        dataActivity.put("DATA_CONNECTING", DATA_CONNECTING);
+        dataActivity.put("DATA_CONNECTED", DATA_CONNECTED);
+        dataActivity.put("DATA_SUSPENDED", DATA_SUSPENDED);
+
+        final Map<String, Object> signal = new HashMap<>();
+        signal.put("CALL_STATE_IDLE", CALL_STATE_IDLE);
+        signal.put("CALL_STATE_RINGING", CALL_STATE_RINGING);
+        signal.put("CALL_STATE_OFFHOOK", CALL_STATE_OFFHOOK);
 
         constants.put("DATA_CONNECTION", dataActivity);
 
