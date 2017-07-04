@@ -192,7 +192,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         result.putString("type", "LISTEN_CALL_STATE");
         result.putMap("data", map);
 
-        sendEvent(PHONE_STATE_LISTENER, map);
+        sendEvent(PHONE_STATE_LISTENER, result);
     }
 
     @Override
@@ -204,7 +204,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         result.putString("type", "LISTEN_CALL_FORWARDING_INDICATOR");
         result.putMap("data", map);
 
-        sendEvent(PHONE_STATE_LISTENER, map);
+        sendEvent(PHONE_STATE_LISTENER, result);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -283,7 +283,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         result.putString("type", "LISTEN_DATA_ACTIVITY");
         result.putMap("data", map);
 
-        sendEvent(PHONE_STATE_LISTENER, map);
+        sendEvent(PHONE_STATE_LISTENER, result);
     }
 
     @Override
@@ -295,7 +295,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         result.putString("type", "LISTEN_DATA_CONNECTION_STATE");
         result.putMap("data", map);
 
-        sendEvent(PHONE_STATE_LISTENER, map);
+        sendEvent(PHONE_STATE_LISTENER, result);
     }
 
     @Override
@@ -314,7 +314,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         result.putString("type", "LISTEN_SIGNAL_STRENGTHS");
         result.putMap("data", map);
 
-        sendEvent(PHONE_STATE_LISTENER, map);
+        sendEvent(PHONE_STATE_LISTENER, result);
     }
 
     @Override
