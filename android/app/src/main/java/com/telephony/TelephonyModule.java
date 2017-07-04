@@ -166,29 +166,20 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         constants.put(LISTEN_SERVICE_STATE, PhoneStateListener.LISTEN_SERVICE_STATE);
         constants.put(LISTEN_SIGNAL_STRENGTHS, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 
-        final Map<String, Object> directions = new HashMap<>();
-        directions.put("DATA_ACTIVITY_NONE", DATA_ACTIVITY_NONE);
-        directions.put("DATA_ACTIVITY_IN", DATA_ACTIVITY_IN);
-        directions.put("DATA_ACTIVITY_OUT", DATA_ACTIVITY_OUT);
-        directions.put("DATA_ACTIVITY_INOUT", DATA_ACTIVITY_INOUT);
-        directions.put("DATA_ACTIVITY_DORMANT", DATA_ACTIVITY_DORMANT);
+        constants.put("DATA_ACTIVITY_NONE", DATA_ACTIVITY_NONE);
+        constants.put("DATA_ACTIVITY_IN", DATA_ACTIVITY_IN);
+        constants.put("DATA_ACTIVITY_OUT", DATA_ACTIVITY_OUT);
+        constants.put("DATA_ACTIVITY_INOUT", DATA_ACTIVITY_INOUT);
+        constants.put("DATA_ACTIVITY_DORMANT", DATA_ACTIVITY_DORMANT);
 
-        constants.put("DATA_ACTIVITY", directions);
+        constants.put("DATA_DISCONNECTED", DATA_DISCONNECTED);
+        constants.put("DATA_CONNECTING", DATA_CONNECTING);
+        constants.put("DATA_CONNECTED", DATA_CONNECTED);
+        constants.put("DATA_SUSPENDED", DATA_SUSPENDED);
 
-        final Map<String, Object> dataActivity = new HashMap<>();
-        dataActivity.put("DATA_DISCONNECTED", DATA_DISCONNECTED);
-        dataActivity.put("DATA_CONNECTING", DATA_CONNECTING);
-        dataActivity.put("DATA_CONNECTED", DATA_CONNECTED);
-        dataActivity.put("DATA_SUSPENDED", DATA_SUSPENDED);
-
-        constants.put("DATA_CONNECTION", dataActivity);
-
-        final Map<String, Object> signal = new HashMap<>();
-        signal.put("CALL_STATE_IDLE", CALL_STATE_IDLE);
-        signal.put("CALL_STATE_RINGING", CALL_STATE_RINGING);
-        signal.put("CALL_STATE_OFFHOOK", CALL_STATE_OFFHOOK);
-
-        constants.put("CALL_STATE", signal);
+        constants.put("CALL_STATE_IDLE", CALL_STATE_IDLE);
+        constants.put("CALL_STATE_RINGING", CALL_STATE_RINGING);
+        constants.put("CALL_STATE_OFFHOOK", CALL_STATE_OFFHOOK);
 
         return constants;
     }
