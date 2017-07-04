@@ -34,5 +34,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.facebook.react:react-native:+'
+    compile 'com.android.support:support-v4:23.0.0'
     // From node_modules
 }
