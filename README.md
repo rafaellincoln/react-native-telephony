@@ -30,6 +30,8 @@ componentWillMount() {
   (event) => {
     if (event.type === 'LISTEN_CALL_STATE') {
       console.log(event.data)
+    } else {
+      console.log(event.data)
     }
   })
 
@@ -45,13 +47,39 @@ componentWillMount() {
         // ...
       break;
       default:
-        // ..
+        // ...
       break;
     }
   })
 
   Telephony.getSignalStrength((dBm) => {
     console.log(dBm)
+  })
+
+  Telephony.getCellInfo((cellInfos) => {
+    celInfos.map((info) => {
+      switch(info.connectionType) {
+        case "CDMA":
+          console.log(info.cellIdentity)
+          console.log(info.cellSignalStrength)
+        break;
+        case "WCDMA":
+          console.log(info.cellIdentity)
+          console.log(info.cellSignalStrength)
+        break;
+        case "GSM":
+          console.log(info.cellIdentity)
+          console.log(info.cellSignalStrength)
+        break;
+        case "LTE":
+          console.log(info.cellIdentity)
+          console.log(info.cellSignalStrength)
+        break;
+        default:
+          // ...
+        break;
+      }
+    })
   })
 }
 
