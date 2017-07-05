@@ -233,15 +233,18 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    private String getNetworkClass() {
+    private void getNetworkClass(Callback successCallback) {
         int networkType = telephonyManager.getNetworkType();
+        String network;
+
         switch (networkType) {
             case TelephonyManager.NETWORK_TYPE_GPRS:
             case TelephonyManager.NETWORK_TYPE_EDGE:
             case TelephonyManager.NETWORK_TYPE_CDMA:
             case TelephonyManager.NETWORK_TYPE_1xRTT:
             case TelephonyManager.NETWORK_TYPE_IDEN:
-                return "2G";
+                network = "2G";
+                break;
             case TelephonyManager.NETWORK_TYPE_UMTS:
             case TelephonyManager.NETWORK_TYPE_EVDO_0:
             case TelephonyManager.NETWORK_TYPE_EVDO_A:
@@ -251,12 +254,17 @@ public class TelephonyModule extends ReactContextBaseJavaModule
             case TelephonyManager.NETWORK_TYPE_EVDO_B:
             case TelephonyManager.NETWORK_TYPE_EHRPD:
             case TelephonyManager.NETWORK_TYPE_HSPAP:
-                return "3G";
+                network = "3G";
+                break;
             case TelephonyManager.NETWORK_TYPE_LTE:
-                return "4G";
+                network = "4G";
+                break;
             default:
-                return "Unknown";
+                network = "Unknown";
+                break;
         }
+
+        successCallback.invoke(network);
     }
 
     @Override
