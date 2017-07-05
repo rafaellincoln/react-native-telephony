@@ -58,10 +58,6 @@ componentWillMount() {
     }
   })
 
-  Telephony.getSignalStrength((dBm) => {
-    console.log(dBm)
-  })
-
   Telephony.getCellInfo((cellInfos) => {
     celInfos.map((info) => {
       switch(info.connectionType) {
