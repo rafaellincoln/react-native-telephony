@@ -331,7 +331,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
 
             if (info instanceof CellInfoGsm) {
                 CellIdentityGsm cellIdentity = ((CellInfoGsm) info).getCellIdentity();
-                mapCellIdentity.putString("connectionType", "GSM");
+                map.putString("connectionType", "GSM");
+
                 mapCellIdentity.putInt("cid", cellIdentity.getCid());
                 mapCellIdentity.putInt("lac", cellIdentity.getLac());
                 mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
@@ -344,7 +345,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
                 mapCellSignalStrength.putInt("level", cellSignalStrengthGsm.getLevel());
             } else if (info instanceof CellInfoWcdma && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 CellIdentityWcdma cellIdentity = ((CellInfoWcdma) info).getCellIdentity();
-                mapCellIdentity.putString("connectionType", "WCDMA");
+                map.putString("connectionType", "WCDMA");
+
                 mapCellIdentity.putInt("cid", cellIdentity.getCid());
                 mapCellIdentity.putInt("lac", cellIdentity.getLac());
                 mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
@@ -358,7 +360,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
                 mapCellSignalStrength.putInt("level", cellSignalStrengthWcdma.getLevel());
             } else if (info instanceof CellInfoLte) {
                 CellIdentityLte cellIdentity = ((CellInfoLte) info).getCellIdentity();
-                mapCellIdentity.putString("connectionType", "LTE");
+                map.putString("connectionType", "LTE");
+
                 mapCellIdentity.putInt("ci", cellIdentity.getCi());
                 mapCellIdentity.putInt("tac", cellIdentity.getTac());
                 mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
@@ -374,7 +377,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
 
             } else if (info instanceof CellInfoCdma) {
                 CellIdentityCdma cellIdentity = ((CellInfoCdma) info).getCellIdentity();
-                mapCellIdentity.putString("connectionType", "CDMA");
+                map.putString("connectionType", "CDMA");
+
                 mapCellIdentity.putInt("basestationId", cellIdentity.getBasestationId());
                 mapCellIdentity.putInt("latitude", cellIdentity.getLatitude());
                 mapCellIdentity.putInt("longitude", cellIdentity.getLongitude());
