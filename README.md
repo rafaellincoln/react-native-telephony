@@ -35,6 +35,12 @@ componentWillMount() {
     }
   })
 
+  Telephony.isNetworkRoaming((roaming) => {
+    if (roaming) {
+      // ...
+    }
+  })
+
   Telephony.getNetworkClass((network) => {
     switch(network) {
       case "2G":

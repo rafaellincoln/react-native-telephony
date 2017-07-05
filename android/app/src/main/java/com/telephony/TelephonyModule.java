@@ -124,6 +124,11 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         successCallback.invoke(dBm);
     }
 
+    @ReactMethod
+    public void isNetworkRoaming(Callback successCallback) {
+        successCallback.invoke(telephonyManager.isNetworkRoaming());
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @ReactMethod
     public void getCellInfo(Callback successCallback) {
