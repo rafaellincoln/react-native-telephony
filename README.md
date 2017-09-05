@@ -18,9 +18,6 @@ react-native link react-native-telephony
 ```
 
 ## Usage
-There are different hooks that you may get depending on the platform. So if
-
-Its really easy to setup the package. Have a look at the following code snippet
 
 ``` javascript
 import Telephony from 'react-native-telephony'
