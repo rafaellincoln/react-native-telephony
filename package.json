@@ -10,7 +10,17 @@
 	"repository": {
     "type": "git",
     "url": "https://github.com/rafaellincoln/react-native-telephony"
-  },
+	},
+	"keywords": [
+    "react",
+    "react-native",
+    "telephony",
+    "listen",
+    "call",
+    "android",
+    "cell",
+    "info"
+  ],
 	"license": "MIT",
 	"devDependencies": {
 		"babel-jest": "20.0.3",
