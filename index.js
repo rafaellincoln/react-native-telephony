@@ -1,9 +1,9 @@
 /*
 * @providesModule react-native-telephony
 */
-import { NativeModules, NativeAppEventEmitter } from 'react-native'
+import { NativeModules, NativeAppEventEmitter, Platform } from 'react-native'
 
-const RNTelephony = NativeModules.Telephony
+const RNTelephony = Platform.os === 'ios' ? {} : NativeModules.Telephony
 
 const EVENT_PHONE_STATE = 'phoneState'
 
@@ -11,14 +11,16 @@ const PHONE_STATE_LISTENER = 'Telephony-PhoneStateListener'
 
 const telephony = RNTelephony
 
-telephony.addEventListener = (events, handler) => {
-  RNTelephony && RNTelephony.startListener(events)
-    NativeAppEventEmitter.addListener(
-      PHONE_STATE_LISTENER,
-      (result) => {
-          handler(result);
-      }
-  );
+if (Platform.os === 'android') {
+  telephony.addEventListener = (events, handler) => {
+    RNTelephony && RNTelephony.startListener(events)
+      NativeAppEventEmitter.addListener(
+        PHONE_STATE_LISTENER,
+        (result) => {
+            handler(result);
+        }
+    );
+  }
 }
 
 export default telephony
