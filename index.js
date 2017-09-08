@@ -21,6 +21,14 @@ if (Platform.OS === 'android') {
         }
     );
   }
+
+  telephony.removeEventListener = () => {
+    RNTelephony && RNTelephony.stopListener()
+      NativeAppEventEmitter.removeEventListener(
+        PHONE_STATE_LISTENER,
+        () => {}
+    );
+  }
 }
 
 export default telephony

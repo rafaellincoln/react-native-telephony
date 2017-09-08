@@ -82,6 +82,10 @@ componentWillMount() {
   })
 }
 
+componentWillUnmount() {
+  Telephony.removeEventListener()
+}
+
 ```
 
 ### Events

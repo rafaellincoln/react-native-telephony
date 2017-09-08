@@ -105,8 +105,6 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     public void stopListener() {
         telephonyManager.listen(telephonyPhoneStateListener,
                 PhoneStateListener.LISTEN_NONE);
-        telephonyManager = null;
-        telephonyPhoneStateListener = null;
     }
 
     @ReactMethod
