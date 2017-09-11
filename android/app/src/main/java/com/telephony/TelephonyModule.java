@@ -114,7 +114,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         successCallback.invoke(telephonyManager.isNetworkRoaming());
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @TargetApi(Build.VERSION_CODES.N)
     @ReactMethod
     public void getCellInfo(Callback successCallback) {
 
@@ -179,7 +179,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
                 mapCellIdentity.putInt("tac", cellIdentity.getTac());
                 mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
                 mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
-                mapCellIdentity.putInt("psc", cellIdentity.getPci());
+                mapCellIdentity.putInt("pci", cellIdentity.getPci());
                 mapCellIdentity.putInt("earfcn", cellIdentity.getEarfcn());
 
                 String cellIdHex = decToHex(cellIdentity.getCi());
