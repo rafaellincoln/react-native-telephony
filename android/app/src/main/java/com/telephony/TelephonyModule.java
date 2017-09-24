@@ -233,7 +233,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     @TargetApi(24)
     public void getEarfcn(WritableMap mapCellIdentity, CellIdentityLte cellIdentity) {
         if (android.os.Build.VERSION.SDK_INT >= 24){
-            // Do something for lollipop and above versions
+            // Do something for nougat and above versions
             mapCellIdentity.putInt("earfcn", cellIdentity.getEarfcn());
         } else{
             // do something for phones running an SDK before lollipop
