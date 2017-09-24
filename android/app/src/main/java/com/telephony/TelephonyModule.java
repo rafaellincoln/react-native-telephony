@@ -114,7 +114,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         successCallback.invoke(telephonyManager.isNetworkRoaming());
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @ReactMethod
     public void getCellInfo(Callback successCallback) {
 
@@ -180,7 +180,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
                 mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
                 mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
                 mapCellIdentity.putInt("pci", cellIdentity.getPci());
-                mapCellIdentity.putInt("earfcn", cellIdentity.getEarfcn());
+                getEarfcn(mapCellIdentity, cellIdentity);
+
 
                 String cellIdHex = decToHex(cellIdentity.getCi());
                 String eNodeBHex = cellIdHex.substring(0, cellIdHex.length() - 2);
@@ -227,6 +228,17 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         }
 
         successCallback.invoke(mapArray);
+    }
+
+    @TargetApi(24)
+    public void getEarfcn(WritableMap mapCellIdentity, CellIdentityLte cellIdentity) {
+        if (android.os.Build.VERSION.SDK_INT >= 24){
+            // Do something for lollipop and above versions
+            mapCellIdentity.putInt("earfcn", cellIdentity.getEarfcn());
+        } else{
+            // do something for phones running an SDK before lollipop
+            mapCellIdentity.putInt("earfcn", 0);
+        }
     }
 
     @ReactMethod
