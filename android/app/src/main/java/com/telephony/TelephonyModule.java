@@ -105,6 +105,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     public void stopListener() {
         telephonyManager.listen(telephonyPhoneStateListener,
                 PhoneStateListener.LISTEN_NONE);
+        telephonyManager = null;
+        telephonyPhoneStateListener = null;
     }
 
     @ReactMethod
@@ -164,14 +166,27 @@ public class TelephonyModule extends ReactContextBaseJavaModule
                 mapCellSignalStrength.putInt("dBm", cellSignalStrengthWcdma.getDbm());
                 mapCellSignalStrength.putInt("level", cellSignalStrengthWcdma.getLevel());
             } else if (info instanceof CellInfoLte) {
+                if(info.isRegistered()) {
+                    mapCellIdentity.putBoolean("servingCellFlag", info.isRegistered());
+                } else {
+                    mapCellIdentity.putBoolean("servingCellFlag", info.isRegistered());
+                }
                 CellIdentityLte cellIdentity = ((CellInfoLte) info).getCellIdentity();
                 map.putString("connectionType", "LTE");
 
                 mapCellIdentity.putInt("cid", cellIdentity.getCi());
-                mapCellIdentity.putInt("lac", cellIdentity.getTac());
+                mapCellIdentity.putInt("tac", cellIdentity.getTac());
                 mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
                 mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
-                mapCellIdentity.putInt("psc", cellIdentity.getPci());
+                mapCellIdentity.putInt("pci", cellIdentity.getPci());
+                getEarfcn(mapCellIdentity, cellIdentity);
+
+
+                String cellIdHex = decToHex(cellIdentity.getCi());
+                String eNodeBHex = cellIdHex.substring(0, cellIdHex.length() - 2);
+                mapCellIdentity.putInt("eNodeB", hexToDec(eNodeBHex));
+                String localCellIdHex = cellIdHex.substring(cellIdHex.length() - 2, cellIdHex.length());
+                mapCellIdentity.putInt("localCellId", hexToDec(localCellIdHex));
 
                 CellSignalStrengthLte cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();
 
@@ -212,6 +227,30 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         }
 
         successCallback.invoke(mapArray);
+    }
+
+    @TargetApi(24)
+    public void getEarfcn(WritableMap mapCellIdentity, CellIdentityLte cellIdentity) {
+        if (android.os.Build.VERSION.SDK_INT >= 24){
+            // Do something for nougat and above versions
+            mapCellIdentity.putInt("earfcn", cellIdentity.getEarfcn());
+        } else{
+            // do something for phones running an SDK before lollipop
+            mapCellIdentity.putInt("earfcn", 0);
+        }
+    }
+
+    @ReactMethod
+    public void getPhoneInfo(Callback successCallBack) {
+        WritableMap mapPhoneInfo = Arguments.createMap();
+
+        mapPhoneInfo.putString("imsi", telephonyManager.getSubscriberId().toString());
+        mapPhoneInfo.putString("imei", telephonyManager.getDeviceId());
+        mapPhoneInfo.putString("mdn", telephonyManager.getLine1Number());
+        mapPhoneInfo.putString("model", Build.MANUFACTURER
+            + " " + Build.MODEL + " " + Build.VERSION.RELEASE
+            + " " + Build.VERSION_CODES.class.getFields()[Build.VERSION.SDK_INT].getName());
+        successCallBack.invoke(mapPhoneInfo);
     }
 
     @ReactMethod
@@ -466,5 +505,13 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     @Override
     public void onHostDestroy() {
         stopListener();
+    }
+
+    public String decToHex(int dec) {
+        return String.format("%x", dec);
+    }
+
+    public int hexToDec(String hex) {
+        return Integer.parseInt(hex, 16);
     }
 }
