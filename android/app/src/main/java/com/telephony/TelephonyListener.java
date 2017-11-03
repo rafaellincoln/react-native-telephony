@@ -55,7 +55,7 @@ public class TelephonyListener extends PhoneStateListener {
         this.callStatCallBack.phoneSignalStrengthsUpdated(signalStrength);
     }
 
-    interface PhoneCallStateUpdate {
+    public interface PhoneCallStateUpdate {
         void phoneCallStateUpdated(int state, String incomingNumber);
         void phoneCallForwardingIndicatorUpdated(boolean cfi);
         void phoneCellInfoUpdated(List<CellInfo> cellInfo);
