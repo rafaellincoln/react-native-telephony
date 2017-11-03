@@ -118,15 +118,14 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void getCellInfo(Callback successCallback) {
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            WritableMap map = Arguments.createMap();
-            successCallback.invoke(map);
-            return;
-        }
+        WritableArray mapArray = Arguments.createArray();
 
         List<CellInfo> cellInfo = telephonyManager.getAllCellInfo();
 
-        WritableArray mapArray = Arguments.createArray();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || cellInfo == null) {
+            successCallback.invoke(mapArray);
+            return;
+        }
 
         int i = 0;
 
@@ -255,7 +254,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    private void getNetworkClass(Callback successCallback) {
+    public void getNetworkClass(Callback successCallback) {
         int networkType = telephonyManager.getNetworkType();
         String network;
 
@@ -354,6 +353,8 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     @Override
     public void phoneCellInfoUpdated(List<CellInfo> cellInfo) {
         WritableArray mapArray = Arguments.createArray();
+
+        if (cellInfo == null) { return; }
 
         int i = 0;
 
