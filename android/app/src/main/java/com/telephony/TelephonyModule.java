@@ -181,11 +181,11 @@ public class TelephonyModule extends ReactContextBaseJavaModule
                 mapCellIdentity.putInt("pci", cellIdentity.getPci());
                 getEarfcn(mapCellIdentity, cellIdentity);
 
-
                 String cellIdHex = decToHex(cellIdentity.getCi());
-                String eNodeBHex = cellIdHex.substring(0, cellIdHex.length() - 2);
+                boolean cellIdHexIsEmpty = cellIdHex == null || cellIdHex.isEmpty() || cellIdHex.length() < 2;
+                String eNodeBHex = cellIdHexIsEmpty ? "0" : cellIdHex.substring(0, cellIdHex.length() - 2);
                 mapCellIdentity.putInt("eNodeB", hexToDec(eNodeBHex));
-                String localCellIdHex = cellIdHex.substring(cellIdHex.length() - 2, cellIdHex.length());
+                String localCellIdHex = cellIdHexIsEmpty ? "0" : cellIdHex.substring(cellIdHex.length() - 2, cellIdHex.length());
                 mapCellIdentity.putInt("localCellId", hexToDec(localCellIdHex));
 
                 CellSignalStrengthLte cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();

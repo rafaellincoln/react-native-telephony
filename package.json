@@ -1,6 +1,6 @@
 {
   "name": "react-native-telephony",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Android Telephony for React Native",
   "main": "index.js",
 	"scripts": {
