@@ -97,136 +97,146 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     @ReactMethod
     public void startListener(int events) {
         telephonyPhoneStateListener = new TelephonyListener(this);
-        telephonyManager.listen(telephonyPhoneStateListener, events);
-
+        if (telephonyManager != null) {
+            telephonyManager.listen(telephonyPhoneStateListener, events);
+        }
     }
 
     @ReactMethod
     public void stopListener() {
-        telephonyManager.listen(telephonyPhoneStateListener,
-                PhoneStateListener.LISTEN_NONE);
-        telephonyManager = null;
+        if (telephonyManager != null) {
+            telephonyManager.listen(telephonyPhoneStateListener,
+                    PhoneStateListener.LISTEN_NONE);
+            telephonyManager = null;
+        }
         telephonyPhoneStateListener = null;
     }
 
     @ReactMethod
-    public void isNetworkRoaming(Callback successCallback) {
+    public void isNetworkRoaming(Callback successCallback, Callback failureCallback) {
+        if (telephonyManager == null) {
+            failureCallback.invoke("telephonyManager is null");
+            return;
+        }
         successCallback.invoke(telephonyManager.isNetworkRoaming());
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @ReactMethod
-    public void getCellInfo(Callback successCallback) {
+    public void getCellInfo(Callback successCallback, Callback failureCallback) {
+        try {
+            WritableArray mapArray = Arguments.createArray();
 
-        WritableArray mapArray = Arguments.createArray();
+            List<CellInfo> cellInfo = telephonyManager.getAllCellInfo();
 
-        List<CellInfo> cellInfo = telephonyManager.getAllCellInfo();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || cellInfo == null) {
-            successCallback.invoke(mapArray);
-            return;
-        }
-
-        int i = 0;
-
-        for (CellInfo info : cellInfo) {
-            WritableMap mapCellIdentity = Arguments.createMap();
-            WritableMap mapCellSignalStrength = Arguments.createMap();
-            WritableMap map = Arguments.createMap();
-
-            map.putInt("key", i);
-
-            if (info instanceof CellInfoGsm) {
-                CellIdentityGsm cellIdentity = ((CellInfoGsm) info).getCellIdentity();
-                map.putString("connectionType", "GSM");
-
-                mapCellIdentity.putInt("cid", cellIdentity.getCid());
-                mapCellIdentity.putInt("lac", cellIdentity.getLac());
-                mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
-                mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
-                mapCellIdentity.putInt("psc", cellIdentity.getPsc());
-
-                CellSignalStrengthGsm cellSignalStrengthGsm = ((CellInfoGsm) info).getCellSignalStrength();
-                mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthGsm.getAsuLevel());
-                mapCellSignalStrength.putInt("dBm", cellSignalStrengthGsm.getDbm());
-                mapCellSignalStrength.putInt("level", cellSignalStrengthGsm.getLevel());
-            } else if (info instanceof CellInfoWcdma && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                CellIdentityWcdma cellIdentity = ((CellInfoWcdma) info).getCellIdentity();
-                map.putString("connectionType", "WCDMA");
-
-                mapCellIdentity.putInt("cid", cellIdentity.getCid());
-                mapCellIdentity.putInt("lac", cellIdentity.getLac());
-                mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
-                mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
-                mapCellIdentity.putInt("psc", cellIdentity.getPsc());
-
-                CellSignalStrengthWcdma cellSignalStrengthWcdma = ((CellInfoWcdma) info).getCellSignalStrength();
-
-                mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthWcdma.getAsuLevel());
-                mapCellSignalStrength.putInt("dBm", cellSignalStrengthWcdma.getDbm());
-                mapCellSignalStrength.putInt("level", cellSignalStrengthWcdma.getLevel());
-            } else if (info instanceof CellInfoLte) {
-                if(info.isRegistered()) {
-                    mapCellIdentity.putBoolean("servingCellFlag", info.isRegistered());
-                } else {
-                    mapCellIdentity.putBoolean("servingCellFlag", info.isRegistered());
-                }
-                CellIdentityLte cellIdentity = ((CellInfoLte) info).getCellIdentity();
-                map.putString("connectionType", "LTE");
-
-                mapCellIdentity.putInt("cid", cellIdentity.getCi());
-                mapCellIdentity.putInt("tac", cellIdentity.getTac());
-                mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
-                mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
-                mapCellIdentity.putInt("pci", cellIdentity.getPci());
-                getEarfcn(mapCellIdentity, cellIdentity);
-
-                String cellIdHex = decToHex(cellIdentity.getCi());
-                boolean cellIdHexIsEmpty = cellIdHex == null || cellIdHex.isEmpty() || cellIdHex.length() < 2;
-                String eNodeBHex = cellIdHexIsEmpty ? "0" : cellIdHex.substring(0, cellIdHex.length() - 2);
-                mapCellIdentity.putInt("eNodeB", hexToDec(eNodeBHex));
-                String localCellIdHex = cellIdHexIsEmpty ? "0" : cellIdHex.substring(cellIdHex.length() - 2, cellIdHex.length());
-                mapCellIdentity.putInt("localCellId", hexToDec(localCellIdHex));
-
-                CellSignalStrengthLte cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();
-
-                mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthLte.getAsuLevel());
-                mapCellSignalStrength.putInt("dBm", cellSignalStrengthLte.getDbm());
-                mapCellSignalStrength.putInt("level", cellSignalStrengthLte.getLevel());
-                mapCellSignalStrength.putInt("timingAdvance", cellSignalStrengthLte.getTimingAdvance());
-
-            } else if (info instanceof CellInfoCdma) {
-                CellIdentityCdma cellIdentity = ((CellInfoCdma) info).getCellIdentity();
-                map.putString("connectionType", "CDMA");
-
-                mapCellIdentity.putInt("basestationId", cellIdentity.getBasestationId());
-                mapCellIdentity.putInt("latitude", cellIdentity.getLatitude());
-                mapCellIdentity.putInt("longitude", cellIdentity.getLongitude());
-                mapCellIdentity.putInt("networkId", cellIdentity.getNetworkId());
-                mapCellIdentity.putInt("systemId", cellIdentity.getSystemId());
-
-                CellSignalStrengthCdma cellSignalStrengthCdma = ((CellInfoCdma) info).getCellSignalStrength();
-
-                mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthCdma.getAsuLevel());
-                mapCellSignalStrength.putInt("cmdaDbm", cellSignalStrengthCdma.getCdmaDbm());
-                mapCellSignalStrength.putInt("cmdaEcio", cellSignalStrengthCdma.getCdmaEcio());
-                mapCellSignalStrength.putInt("cmdaLevl", cellSignalStrengthCdma.getCdmaLevel());
-                mapCellSignalStrength.putInt("dBm", cellSignalStrengthCdma.getDbm());
-                mapCellSignalStrength.putInt("evdoDbm", cellSignalStrengthCdma.getEvdoDbm());
-                mapCellSignalStrength.putInt("evdoEcio", cellSignalStrengthCdma.getEvdoEcio());
-                mapCellSignalStrength.putInt("evdoLevel", cellSignalStrengthCdma.getEvdoLevel());
-                mapCellSignalStrength.putInt("evdoSnr", cellSignalStrengthCdma.getEvdoSnr());
-                mapCellSignalStrength.putInt("level", cellSignalStrengthCdma.getLevel());
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1 || cellInfo == null) {
+                successCallback.invoke(mapArray);
+                return;
             }
 
-            map.putMap("cellIdentity", mapCellIdentity);
-            map.putMap("cellSignalStrength", mapCellSignalStrength);
+            int i = 0;
 
-            mapArray.pushMap(map);
-            i++;
+            for (CellInfo info : cellInfo) {
+                WritableMap mapCellIdentity = Arguments.createMap();
+                WritableMap mapCellSignalStrength = Arguments.createMap();
+                WritableMap map = Arguments.createMap();
+
+                map.putInt("key", i);
+
+                if (info instanceof CellInfoGsm) {
+                    CellIdentityGsm cellIdentity = ((CellInfoGsm) info).getCellIdentity();
+                    map.putString("connectionType", "GSM");
+
+                    mapCellIdentity.putInt("cid", cellIdentity.getCid());
+                    mapCellIdentity.putInt("lac", cellIdentity.getLac());
+                    mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
+                    mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
+                    mapCellIdentity.putInt("psc", cellIdentity.getPsc());
+
+                    CellSignalStrengthGsm cellSignalStrengthGsm = ((CellInfoGsm) info).getCellSignalStrength();
+                    mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthGsm.getAsuLevel());
+                    mapCellSignalStrength.putInt("dBm", cellSignalStrengthGsm.getDbm());
+                    mapCellSignalStrength.putInt("level", cellSignalStrengthGsm.getLevel());
+                } else if (info instanceof CellInfoWcdma && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    CellIdentityWcdma cellIdentity = ((CellInfoWcdma) info).getCellIdentity();
+                    map.putString("connectionType", "WCDMA");
+
+                    mapCellIdentity.putInt("cid", cellIdentity.getCid());
+                    mapCellIdentity.putInt("lac", cellIdentity.getLac());
+                    mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
+                    mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
+                    mapCellIdentity.putInt("psc", cellIdentity.getPsc());
+
+                    CellSignalStrengthWcdma cellSignalStrengthWcdma = ((CellInfoWcdma) info).getCellSignalStrength();
+
+                    mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthWcdma.getAsuLevel());
+                    mapCellSignalStrength.putInt("dBm", cellSignalStrengthWcdma.getDbm());
+                    mapCellSignalStrength.putInt("level", cellSignalStrengthWcdma.getLevel());
+                } else if (info instanceof CellInfoLte) {
+                    if (info.isRegistered()) {
+                        mapCellIdentity.putBoolean("servingCellFlag", info.isRegistered());
+                    } else {
+                        mapCellIdentity.putBoolean("servingCellFlag", info.isRegistered());
+                    }
+                    CellIdentityLte cellIdentity = ((CellInfoLte) info).getCellIdentity();
+                    map.putString("connectionType", "LTE");
+
+                    mapCellIdentity.putInt("cid", cellIdentity.getCi());
+                    mapCellIdentity.putInt("tac", cellIdentity.getTac());
+                    mapCellIdentity.putInt("mcc", cellIdentity.getMcc());
+                    mapCellIdentity.putInt("mnc", cellIdentity.getMnc());
+                    mapCellIdentity.putInt("pci", cellIdentity.getPci());
+                    getEarfcn(mapCellIdentity, cellIdentity);
+
+                    String cellIdHex = decToHex(cellIdentity.getCi());
+                    boolean cellIdHexIsEmpty = cellIdHex == null || cellIdHex.isEmpty() || cellIdHex.length() < 2;
+                    String eNodeBHex = cellIdHexIsEmpty ? "0" : cellIdHex.substring(0, cellIdHex.length() - 2);
+                    mapCellIdentity.putInt("eNodeB", hexToDec(eNodeBHex));
+                    String localCellIdHex = cellIdHexIsEmpty ? "0" : cellIdHex.substring(cellIdHex.length() - 2, cellIdHex.length());
+                    mapCellIdentity.putInt("localCellId", hexToDec(localCellIdHex));
+
+                    CellSignalStrengthLte cellSignalStrengthLte = ((CellInfoLte) info).getCellSignalStrength();
+
+                    mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthLte.getAsuLevel());
+                    mapCellSignalStrength.putInt("dBm", cellSignalStrengthLte.getDbm());
+                    mapCellSignalStrength.putInt("level", cellSignalStrengthLte.getLevel());
+                    mapCellSignalStrength.putInt("timingAdvance", cellSignalStrengthLte.getTimingAdvance());
+
+                } else if (info instanceof CellInfoCdma) {
+                    CellIdentityCdma cellIdentity = ((CellInfoCdma) info).getCellIdentity();
+                    map.putString("connectionType", "CDMA");
+
+                    mapCellIdentity.putInt("basestationId", cellIdentity.getBasestationId());
+                    mapCellIdentity.putInt("latitude", cellIdentity.getLatitude());
+                    mapCellIdentity.putInt("longitude", cellIdentity.getLongitude());
+                    mapCellIdentity.putInt("networkId", cellIdentity.getNetworkId());
+                    mapCellIdentity.putInt("systemId", cellIdentity.getSystemId());
+
+                    CellSignalStrengthCdma cellSignalStrengthCdma = ((CellInfoCdma) info).getCellSignalStrength();
+
+                    mapCellSignalStrength.putInt("asuLevel", cellSignalStrengthCdma.getAsuLevel());
+                    mapCellSignalStrength.putInt("cmdaDbm", cellSignalStrengthCdma.getCdmaDbm());
+                    mapCellSignalStrength.putInt("cmdaEcio", cellSignalStrengthCdma.getCdmaEcio());
+                    mapCellSignalStrength.putInt("cmdaLevl", cellSignalStrengthCdma.getCdmaLevel());
+                    mapCellSignalStrength.putInt("dBm", cellSignalStrengthCdma.getDbm());
+                    mapCellSignalStrength.putInt("evdoDbm", cellSignalStrengthCdma.getEvdoDbm());
+                    mapCellSignalStrength.putInt("evdoEcio", cellSignalStrengthCdma.getEvdoEcio());
+                    mapCellSignalStrength.putInt("evdoLevel", cellSignalStrengthCdma.getEvdoLevel());
+                    mapCellSignalStrength.putInt("evdoSnr", cellSignalStrengthCdma.getEvdoSnr());
+                    mapCellSignalStrength.putInt("level", cellSignalStrengthCdma.getLevel());
+                }
+
+                map.putMap("cellIdentity", mapCellIdentity);
+                map.putMap("cellSignalStrength", mapCellSignalStrength);
+
+                mapArray.pushMap(map);
+                i++;
+            }
+
+            successCallback.invoke(mapArray);
+        } catch (Exception e) {
+            failureCallback.invoke(e.getMessage());
         }
-
-        successCallback.invoke(mapArray);
     }
 
     @TargetApi(24)
@@ -241,51 +251,59 @@ public class TelephonyModule extends ReactContextBaseJavaModule
     }
 
     @ReactMethod
-    public void getPhoneInfo(Callback successCallBack) {
-        WritableMap mapPhoneInfo = Arguments.createMap();
+    public void getPhoneInfo(Callback successCallBack, Callback failureCallback) {
+        try {
+            WritableMap mapPhoneInfo = Arguments.createMap();
 
-        mapPhoneInfo.putString("imsi", telephonyManager.getSubscriberId().toString());
-        mapPhoneInfo.putString("imei", telephonyManager.getDeviceId());
-        mapPhoneInfo.putString("mdn", telephonyManager.getLine1Number());
-        mapPhoneInfo.putString("model", Build.MANUFACTURER
-            + " " + Build.MODEL + " " + Build.VERSION.RELEASE
-            + " " + Build.VERSION_CODES.class.getFields()[Build.VERSION.SDK_INT].getName());
-        successCallBack.invoke(mapPhoneInfo);
+            mapPhoneInfo.putString("imsi", telephonyManager.getSubscriberId().toString());
+            mapPhoneInfo.putString("imei", telephonyManager.getDeviceId());
+            mapPhoneInfo.putString("mdn", telephonyManager.getLine1Number());
+            mapPhoneInfo.putString("model", Build.MANUFACTURER
+                    + " " + Build.MODEL + " " + Build.VERSION.RELEASE
+                    + " " + Build.VERSION_CODES.class.getFields()[Build.VERSION.SDK_INT].getName());
+            successCallBack.invoke(mapPhoneInfo);
+        } catch (Exception e) {
+            failureCallback.invoke(e.getMessage());
+        }
     }
 
     @ReactMethod
-    public void getNetworkClass(Callback successCallback) {
-        int networkType = telephonyManager.getNetworkType();
-        String network;
+    public void getNetworkClass(Callback successCallback, Callback failureCallback) {
+        try {
+            int networkType = telephonyManager.getNetworkType();
+            String network;
 
-        switch (networkType) {
-            case TelephonyManager.NETWORK_TYPE_GPRS:
-            case TelephonyManager.NETWORK_TYPE_EDGE:
-            case TelephonyManager.NETWORK_TYPE_CDMA:
-            case TelephonyManager.NETWORK_TYPE_1xRTT:
-            case TelephonyManager.NETWORK_TYPE_IDEN:
-                network = "2G";
-                break;
-            case TelephonyManager.NETWORK_TYPE_UMTS:
-            case TelephonyManager.NETWORK_TYPE_EVDO_0:
-            case TelephonyManager.NETWORK_TYPE_EVDO_A:
-            case TelephonyManager.NETWORK_TYPE_HSDPA:
-            case TelephonyManager.NETWORK_TYPE_HSUPA:
-            case TelephonyManager.NETWORK_TYPE_HSPA:
-            case TelephonyManager.NETWORK_TYPE_EVDO_B:
-            case TelephonyManager.NETWORK_TYPE_EHRPD:
-            case TelephonyManager.NETWORK_TYPE_HSPAP:
-                network = "3G";
-                break;
-            case TelephonyManager.NETWORK_TYPE_LTE:
-                network = "4G";
-                break;
-            default:
-                network = "Unknown";
-                break;
+            switch (networkType) {
+                case TelephonyManager.NETWORK_TYPE_GPRS:
+                case TelephonyManager.NETWORK_TYPE_EDGE:
+                case TelephonyManager.NETWORK_TYPE_CDMA:
+                case TelephonyManager.NETWORK_TYPE_1xRTT:
+                case TelephonyManager.NETWORK_TYPE_IDEN:
+                    network = "2G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_UMTS:
+                case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                case TelephonyManager.NETWORK_TYPE_HSDPA:
+                case TelephonyManager.NETWORK_TYPE_HSUPA:
+                case TelephonyManager.NETWORK_TYPE_HSPA:
+                case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                case TelephonyManager.NETWORK_TYPE_EHRPD:
+                case TelephonyManager.NETWORK_TYPE_HSPAP:
+                    network = "3G";
+                    break;
+                case TelephonyManager.NETWORK_TYPE_LTE:
+                    network = "4G";
+                    break;
+                default:
+                    network = "Unknown";
+                    break;
+            }
+
+            successCallback.invoke(network);
+        } catch (Exception e) {
+            failureCallback.invoke(e.getMessage());
         }
-
-        successCallback.invoke(network);
     }
 
     @Override
