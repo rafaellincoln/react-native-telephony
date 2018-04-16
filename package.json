@@ -1,8 +1,8 @@
 {
-  "name": "react-native-telephony",
-  "version": "1.5.0",
-  "description": "Android Telephony for React Native",
-  "main": "index.js",
+	"name": "react-native-telephony",
+	"version": "2.0.0",
+	"description": "Android Telephony for React Native",
+	"main": "index.js",
 	"scripts": {
 		"test": "jest"
 	},
@@ -24,9 +24,9 @@
 	"license": "MIT",
 	"devDependencies": {
 		"babel-jest": "20.0.3",
-    "babel-preset-react-native": "2.0.0",
-    "eslint": "^4.7.0",
-    "eslint-plugin-react": "^7.3.0",
+		"babel-preset-react-native": "2.0.0",
+		"eslint": "^4.7.0",
+		"eslint-plugin-react": "^7.3.0",
 		"jest": "^20.0.4",
 		"react-test-renderer": "^16.0.0-rc.2",
 		"react": "^16.0",
