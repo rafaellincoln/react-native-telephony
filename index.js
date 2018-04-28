@@ -11,7 +11,7 @@ const PHONE_STATE_LISTENER = 'Telephony-PhoneStateListener'
 
 const telephony = RNTelephony
 
-if (Platform.OS === 'android') {
+if (Platform.OS === 'android' && telephony) {
   telephony.addEventListener = (events, handler) => {
     RNTelephony && RNTelephony.startListener(events)
       NativeAppEventEmitter.addListener(
