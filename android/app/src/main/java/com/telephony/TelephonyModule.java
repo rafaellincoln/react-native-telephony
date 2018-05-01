@@ -96,20 +96,24 @@ public class TelephonyModule extends ReactContextBaseJavaModule
 
     @ReactMethod
     public void startListener(int events) {
-        telephonyPhoneStateListener = new TelephonyListener(this);
-        if (telephonyManager != null) {
-            telephonyManager.listen(telephonyPhoneStateListener, events);
-        }
+        try {
+            telephonyPhoneStateListener = new TelephonyListener(this);
+            if (telephonyManager != null) {
+                telephonyManager.listen(telephonyPhoneStateListener, events);
+            }
+        } catch (Exception e) {}
     }
 
     @ReactMethod
     public void stopListener() {
-        if (telephonyManager != null) {
-            telephonyManager.listen(telephonyPhoneStateListener,
-                    PhoneStateListener.LISTEN_NONE);
-            telephonyManager = null;
-        }
-        telephonyPhoneStateListener = null;
+         try {
+            if (telephonyManager != null) {
+                telephonyManager.listen(telephonyPhoneStateListener,
+                        PhoneStateListener.LISTEN_NONE);
+                telephonyManager = null;
+            }
+            telephonyPhoneStateListener = null;
+         } catch (Exception e) {}
     }
 
     @ReactMethod

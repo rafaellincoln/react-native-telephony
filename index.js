@@ -11,24 +11,26 @@ const PHONE_STATE_LISTENER = 'Telephony-PhoneStateListener'
 
 const telephony = RNTelephony
 
-if (Platform.OS === 'android' && telephony) {
-  telephony.addEventListener = (events, handler) => {
-    RNTelephony && RNTelephony.startListener(events)
-      NativeAppEventEmitter.addListener(
-        PHONE_STATE_LISTENER,
-        (result) => {
-            handler(result);
-        }
-    );
-  }
+if (Platform.OS === 'android' && telephony) {  
+  try {
+    telephony.addEventListener = (events, handler) => {
+      RNTelephony && RNTelephony.startListener(events)
+        NativeAppEventEmitter.addListener(
+          PHONE_STATE_LISTENER,
+          (result) => {
+              handler(result);
+          }
+      );
+    }
 
-  telephony.removeEventListener = () => {
-    RNTelephony && RNTelephony.stopListener()
-      NativeAppEventEmitter.removeEventListener(
-        PHONE_STATE_LISTENER,
-        () => {}
-    );
-  }
+    telephony.removeEventListener = () => {
+      RNTelephony && RNTelephony.stopListener()
+        NativeAppEventEmitter.removeEventListener(
+          PHONE_STATE_LISTENER,
+          () => {}
+      );
+    }
+  } catch (e) { }
 }
 
 export default telephony
