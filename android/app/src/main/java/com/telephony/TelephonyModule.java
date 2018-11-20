@@ -486,6 +486,7 @@ public class TelephonyModule extends ReactContextBaseJavaModule
         map.putInt("evdoSnr", signalStrength.getEvdoSnr());
         map.putInt("gsmBitErrorRate", signalStrength.getGsmBitErrorRate());
         map.putInt("gsmSignalStrength", signalStrength.getGsmSignalStrength());
+        map.putInt("level", signalStrength.getLevel());
         map.putBoolean("gsm", signalStrength.isGsm());
 
         WritableMap result = Arguments.createMap();
