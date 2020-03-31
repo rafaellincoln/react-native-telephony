@@ -25,11 +25,7 @@ import Telephony from 'react-native-telephony'
 componentWillMount() {
   Telephony.addEventListener(Telephony.LISTEN_CALL_STATE | Telephony.LISTEN_DATA_ACTIVITY,
   (event) => {
-    if (event.type === 'LISTEN_CALL_STATE') {
-      console.log(event.data)
-    } else {
-      console.log(event.data)
-    }
+    console.log(event.data);
   })
 
   Telephony.isNetworkRoaming((roaming) => {
